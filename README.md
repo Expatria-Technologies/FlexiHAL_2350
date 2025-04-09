@@ -1,5 +1,8 @@
-![Logo](/readme_images/logo_sm.jpg)
+![Logo](/readme_images/Flag.png)
+### Canadian-designed open source hardware. For everyone.
+
 # Flexi-HAL CNC Controller
+![Logo](/readme_images/logo_sm.jpg)
 <img src="/readme_images/Board_Photo.jpg" width="800">
 
 
@@ -7,35 +10,37 @@ Expatria Technologies GRBLHAL and LinuxCNC (and more!) CNC control board
 
 Currently available in our online store:
 
-https://expatria.myshopify.com/products/flexi-hal
+https://expatria.myshopify.com/products/flexi-hal-2350
 
 Please consider buying a board to support our open-source designs. 
 
-The Flexi-HAL was designed to be an EMI resistant IO platform for any microcontroller based CNC/motion control firmware or software.  This board includes a few features that we couldn't find on other boards, and it reduces the amount of extra wiring in our setups.  In the co-operative spirit of the PrintNC and other CNC communities, and Open Source Hardware, the Flexi-HAL will be licensed and free to use by all parties, including commercial parties, under the CERN-OHL-S V2 license.  It is our hope that the community finds the design useful and that it may be carried forward to help advance the PrintNC and broader CNC hobby community.
+The FlexiHal 2350 is designed to be an EMI resistant IO platform for any microcontroller based CNC/motion control firmware or software.  This board includes a few features that we couldn't find on other boards, and it reduces the amount of extra wiring in our setups.  In the co-operative spirit of the PrintNC and other CNC communities, and Open Source Hardware, the FlexiHAL will be licensed and free to use by all parties, including commercial parties, under the CERN-OHL-S V2 license.  It is our hope that the community finds the design useful and that it may be carried forward to help advance the PrintNC and broader CNC hobby community.
 
-The Flexi-HAL incorporates community driven elements from the PrintNC Electronic Standardization (EST) Project.  As part of this project, two additional breakout boards have been created for the user controls and limits/probe inputs.  These are simple boards and could easily be milled and hand assembled, but fabrication files for each are available in the CAM_Outputs folder.  The inputs are accessible via the RJ45 connectors on the Flexi-HAL mainboard.  In addition, the Flexi-HAL is intended to be used with the Expatria Real-Time jog controller or similar peripheral:
+The FlexiHAL 2350 is a premium controller that utilizes Raspberry Pi's RP2350 microcontroller.  The RP2350 is well suited for CNC applications using step/direction or quadrature outputs when leveraging the unique capabilities of the PIO cores.    In addition, the Flexi-HAL is intended to be used with the Expatria Real-Time jog controller or similar peripheral:
+
+
 
 https://github.com/Expatria-Technologies/RT_Jog_Controller
 
-The key features of the Flexi-HAL:
+The key features of the FlexiHAL 2350:
 
-1) 5 Axis of isolated step/dir motor control featuring high-speed digital isolators and differential signal drivers for maximum signal integrity and step rates.
-2) Integrated support for 3 wire inductive type powered switches.
-3) Onboard 5V power regulator.
-4) Integrated RS485 with automatic direction control.
-5) Support for closed loop stepper motors and servos with alarm feedback.
-6) Differential interface for a spindle encoder inputC.
-7) Real-time control port for remote handwheels and pendants.
-8) Raspberry Pi GPIO connector allows integration of sender software and allows the board to host a full LinuxCNC installation.
-9) 10V or 5V spindle control including PWM output via selectable jumpers.
-10) 3 wire (powered) connections for standard CNC buttons on a breakout RJ45 connector that utilizes components compatible with the PrintNC EST project.
-11) XYZA limit switches and probe/toolsetter on breakout RJ45 connector.
+1) 6 Axis of isolated step/dir motor control featuring high-speed digital isolators and differential signal drivers for maximum signal integrity and step rates.
+2) 15 general inputs (user+limits+ 2 encoders)
+3) 40 points of I/O not including step/dir
+4) Integrated support for 3 wire inductive type powered switches.
+5) Onboard 5V power regulator.
+6) Integrated RS485 with automatic direction control.
+7) Support for closed loop stepper motors and servos with alarm feedback.   6 discrete inputs for motor alarm.  6 discrete outputs for motor enable.
+8) Two Differential interfaces for a spindle encoder inputs or can be used for general purpose inputs.
+9) Real-time control port for remote pendants.
+10) Raspberry Pi GPIO connector allows integration of sender software and allows the board to host a full LinuxCNC installation.
+11) 5V PWM laser control.  4 additional high-speed 5V outputs.
 12) Flood/Mist/Spindle relay drivers.
-13) Additional auxilliary inputs and relay driver outputs.
+13) Additional auxilliary relay driver outputs.  8 high-current outputs total.
 14) All machine facing IO is galvanically isolated from the MCU and user interfaces.
 15) Easy reliable USB-C connection to a PC
-16) GRBLHAL Ethernet Websockets or Telnet communication options with uFlexiNET module.
-17) GRBLHAL SD card G-Code streaming and macro/subroutine storage (including looping and conditional execution) with uFelxiNET module.
+16) GRBLHAL Ethernet Websockets or Telnet communication through onboard Ethernet.
+17) GRBLHAL SD card G-Code streaming and macro/subroutine storage (including looping and conditional execution) with onboard storate and SD card.
 
 Optimized GRBLHAL driver is located here:  
 https://github.com/Expatria-Technologies/STM32F4xx/releases
@@ -46,20 +51,14 @@ https://github.com/Expatria-Technologies/remora-flexi-hal
 Prebuilt Raspberry Pi 4B image is located here:  
 https://github.com/Expatria-Technologies/remora-flexi-hal/releases
 
-Accessory Breakout PCBs are located here:  
-https://github.com/Expatria-Technologies/EST_Accessory_PCB
+Accessory Encover Breakout PCB is located here:  
+[https://github.com/Expatria-Technologies/EST_Accessory_PCB/ENCODER_BREAKOUT_MK2](https://github.com/Expatria-Technologies/EST_Accessory_PCB/tree/main/ENCODER_BREAKOUT_MK2)
 
 Various community mods and accessories are located here:  
 https://github.com/Expatria-Technologies/Mods-Accessories
 
 Recommended GRBLHAL Post Processor is here:  
 https://github.com/Dietz0r/grblHAL_Fusion360_Post_Processor
-
-uFlexiNET expansion card is here:  
-https://github.com/Expatria-Technologies/uFlexiNET
-
-The uf2 bootloader can be found here:  
-https://github.com/Expatria-Technologies/tinyuf2/releases
 
 ## Flexi-HAL Overview
 
@@ -73,14 +72,13 @@ Pinout List:
 
 <img src="/readme_images/Pinout.png" width="900">
 
-### STM32F446 Microcontroller
+### RP2350 Microcontroller
 
-Primarily, the board supports both GRBLHAL and LinuxCNC.  Binary firmware builds for different axis configurations are published on the Expatria Github.  In addition, a customized port of the awesome Remora project has been developed alongside Flexi-HAL so that you can easily switch to LinuxCNC.  With LinuxCNC, a Raspberry Pi 4b is installed in the Pi GPIO header to ensure the best possible signal integrity for the SPI step generation interface.
 
-By using a common STM32F4 MCU, the Flexi-HAL is also able to easily host ports of uCNC, Marlin and even Klipper so it can drive much more than just CNC machines.
+Primarily, the board supports both GRBLHAL and LinuxCNC.  Binary firmware builds for different axis configurations are published on the Expatria Github.  In addition, a customized port of the awesome Remora project has been developed alongside FlexiHAL so that you can easily switch to LinuxCNC.  With LinuxCNC, the Ethernet interface is used to connect with a host system.  Raspberry Pi 5 using the Expatria Flexi-Pi image is recommended.
 
 ### UF2 Bootloader
-The Flexi-HAL is meant to be used with a UF2 bootloader. All boards from Expatria will come with this bootloader installed. This allows you to upgrade or change the firmware on the flexi as easily as copying a file to a USB drive.  Pre-built binary firmwares from Expatria are distributed as UF2 files.  There are two ways to access bootloader mode and change the firmware:
+The FlexiHAL 2350 uses the RP2350's built-in UF2 bootloader. This allows you to upgrade or change the firmware on the flexi as easily as copying a file to a USB drive.  Pre-built binary firmwares from Expatria are distributed as UF2 files.  To enter UF2 mode:
 1) Power up the MCU section (connect the USB cable) while holding the CYC/ST and FD/HLD buttons.
 2) Double-tap the reset (RST) button on the side of the board near the USBC port.
 
