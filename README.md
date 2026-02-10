@@ -1,7 +1,7 @@
 ![Logo](/readme_images/Flag.png)
 ### Canadian-designed open source hardware. For everyone.
 
-# Flexi-HAL CNC Controller
+# FlexiHAL 2350 CNC Controller
 ![Logo](/readme_images/logo_sm.jpg)
 <img src="/readme_images/Board_Photo.jpg" width="800">
 
