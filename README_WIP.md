@@ -83,7 +83,7 @@ The FlexiHAL 2350 uses the RP2350's built-in UF2 bootloader. This allows you to 
 Once in bootloader mode, the Flexi will appear as a USB storage device called "RPI-RP2."  Simply copy the new firwmare to this USB drive and the board will automatically install it and reboot.  Some operating systems may give an error when flashing is complete because the 'disk' was removed without ejecting it.  This error can be ignored.
 
 ### Power Input
-<img src="/readme_images/isolation_zones.png" width="500">
+<img src="/readme_images/isolation_zones.png" width="600">
 
 The Flexi-HAL features the capability for full power and ground isolation between the sensitive microncontroller and host circuits, and the external IO that extends out to the rest of the machine.  There is a single input for 12-24VDC.  The board has its own onboard 5V regulator to power the stepper drivers and external RS485 interface.  There is also a small capacity 12V LDO that is specifically for driving the limit and user switches.
 
@@ -95,7 +95,7 @@ Normally the MCU and RPI header will be powered via the USBC connector.  The RT 
 Note: With the isolation jumpers not-populatd, and the Flexi-HAL connected to 12-24v power, it may appear that the board is ready to run as some LEDs illuminate. You MUST provide 5v power to the isolated domain (MCU, Jogger) either through USB or the bypass jumpers in order for the MCU and Jogger to turn on.
 
 ### Stepper Drivers
-<img src="/readme_images/Stepper_Pins.jpg" width="300">
+<img src="/readme_images/Stepper_Pins.jpg" width="400">
 
 The stepper drivers are designed to be used with standard or flex rated RJ45 cables.  Unfortunately you will need to ensure that at the external driver the high and low signal pairs are connected correctly as there is no standard pinout on these drivers.  The 8 pin connection allows you to run a high and low pair for every signal to ensure the best possible signal integrity.  The Flexi-HAL uses high speed digital isolators and differential RS-422 style signal drivers for the motion signals.
 
@@ -106,7 +106,7 @@ Typical wiring for most open-loop stepper drivers:
 ![image](https://github.com/Expatria-Technologies/Flexi-HAL/assets/6061539/89e5df1e-06ef-4319-acb0-a30ee8e6447b)
 
 ### Auxillary Outputs
-<img src="/readme_images/highpower-lowpower.jpg" width="200">
+<img src="/readme_images/highpower-lowpower.jpg" width="400">
 Two style of outputs are provided: high power and low power.  High power outputs are driven directly from the board input power (12-24V).  Low power outputs are driven at 5V.  All outputs are PNP style high-side switching.
 
 #### High Power Outputs
@@ -117,7 +117,7 @@ The low power outputs are designed for fast switching applications such as PWM o
 
 ### PWM Spindle Control
 
-<img src="/readme_images/Spindle_PWM_Config.jpg" width="500">
+<img src="/readme_images/Spindle_PWM_Config.jpg" width="400">
 
 The spindle PWM pin is directly connected to the RP2350 main MCU.  This is normally used to drive a laser module with pulse modulation.  To use this output with a 0-10V analog spindle control, an external PWM converter must be used.
 
@@ -159,7 +159,7 @@ The RJ45 pinout:
 <img src="/readme_images/encoder_rj45_pinout.jpg" width="150">
 
 Encoder Breakout Board:  
-<img src="/readme_images/encoder_render.jpg" width="150">
+<img src="/readme_images/encoder_render.jpg" width="400">
 
 ### FlexiIO Port
 The FlexiHAL2350 introduces a new type of expansion port for Expatria.  The FlexIO port multiplexes the RS485 interface independently to a second connector that carries both power and RS485 signals.  This can be used as both a power source for external modules that are powered from the FlexiHAL's 24V input, or it can serve as a power supply for the board.  The RS485 signalling can be used with Modbus server devices such as the PicoHAL running the nanoModbus GRBLHAL plugin to provide independent control of toolchanges, LEDs, fans etc.
@@ -177,7 +177,7 @@ nanoModbus toolchanger in action (also showing Sienci's ATCI plugin):
 
 
 
-https://github.com/user-attachments/assets/d175002d-f440-4104-a30e-e2d423035390
+https://github.com/user-attachments/assets/e5c6b0d1-849d-4eac-88a9-3914cdb023e6
 
 
 
