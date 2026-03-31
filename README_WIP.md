@@ -58,9 +58,9 @@ https://github.com/Dietz0r/grblHAL_Fusion360_Post_Processor
 
 <img src="/readme_images/Board_Overview.png" width="700">
 
-Pinout List:
+### Pinout List:
 
-<img src="/readme_images/Pinout.png" width="900">
+<img src="/readme_images/Pinout.jpg" width="900">
 
 ### RP2350 Microcontroller
 <img src="/readme_images/rp2350.webp" width="300">
