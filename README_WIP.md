@@ -59,15 +59,23 @@ https://github.com/Dietz0r/grblHAL_Fusion360_Post_Processor
 <img src="/readme_images/Board_Overview.png" width="700">
 
 ### Pinout List:
-
+This diagram shows which pins connect directly to the RP2350 and which are connected to the RP2040 FlexiGPIO expander.
 <img src="/readme_images/Pinout.jpg" width="900">
 
-### RP2350 Microcontroller
+### RP2350 Microcontroller and RP2040 FlexGPIO expander.
 <img src="/readme_images/rp2350.webp" width="300">
 
 The FlexiHAL2350 is built around the RP2350 from Raspberry Pi, an MCU we're genuinely excited about, for its versatile PIO cores and the unique capabilities they unlock.
 The board is designed with flexibility at its core, supporting both GRBLHAL and LinuxCNC. In the future we would also like to add support for uCNC.  Pre-built binary firmware for a variety of axis configurations will be made available on the Expatria GitHub, so you can get up and running quickly without compiling from scratch.
 For LinuxCNC users, there is a customized port of the Remora project alongside FlexiHAL, making it straightforward to switch between motion control environments. In this mode a Raspberry Pi 5 is recommended when running the Expatria Flexi-Pi image.
+
+In order to expand the amount of I/O available on the board, a custom I2C GPIO expander is implemented on an additional RP2040 MCU.  This allows for a large number of additional IO points with much greater potential flexibility than is offered by traditional GPIO expanders.  It will be possible to implment functions such as additional analog/PWM outputs, nexopixel outputs and additional stepper outputs by extending the FlexiGPIO code.
+
+FlexGPIO source code is posted here:  
+[https://github.com/Expatria-Technologies/FlexGPIO](https://github.com/Expatria-Technologies/FlexGPIO)
+
+FlexGPIO GRBLHAL plugin is posted here:  
+[https://github.com/Expatria-Technologies/plugin_FlexGPIO](https://github.com/Expatria-Technologies/plugin_FlexGPIO)
 
 ### UF2 Bootloader
 The FlexiHAL 2350 uses the RP2350's built-in UF2 bootloader. This allows you to upgrade or change the firmware on the flexi as easily as copying a file to a USB drive.  Pre-built binary firmwares from Expatria are distributed as UF2 files.  To enter UF2 mode hold the BOOT button while powering up the board or while pulsing the RUN button.  Note that there are bootloader buttons for both the RP2040 based FlexGPIO expander as well as the main RP2350 processor.
@@ -91,7 +99,7 @@ Note: With the isolation jumpers not-populatd, and the Flexi-HAL connected to 12
 
 The stepper drivers are designed to be used with standard or flex rated RJ45 cables.  Unfortunately you will need to ensure that at the external driver the high and low signal pairs are connected correctly as there is no standard pinout on these drivers.  The 8 pin connection allows you to run a high and low pair for every signal to ensure the best possible signal integrity.  The Flexi-HAL uses high speed digital isolators and differential RS-422 style signal drivers for the motion signals.
 
-The FlexiHAL 2350 has individual enable and alarm signals for every motor.  Alarm and enable polarity can therefore be set to whatever is required for operation.  The alarm output must be high impedance during normal operation.  There are LEDs provided on the board for every motor signal to help with debugging wiring issues.
+Dedicated enable and alarm inputs are routed through the FlexGPIO expander.  A specific motor alarm interrupt is provided to immediately notify the host processor.  Alarm and enable can be set to any polarity that is required for operation.  There are LEDs provided on the board for every motor signal to help with debugging wiring issues.
 
 Typical wiring for most open-loop stepper drivers: 
 
@@ -120,55 +128,60 @@ https://github.com/grblHAL/Plugins_spindle/
 
 ### 6 Axis limit and auxillary inputs
 
-Both PNP and NPN switches are supported.  A selector switch is provided on each input.
+A total of 9 direct 3 wire opto-coupled inputs are provided to cover limit and auxillary inputs.  Both PNP and NPN switches are supported.  A selector switch is provided on each input.
 
 Auto-squaring is supported by enabling ganged axes in GRBLHAL and setting the appropriate pins.
 
-In addition to the limit signals, there are two probe input pins on the limit RJ45 breakout connector and the main PCB that are multiplexed via XOR logic and share a single input pin on the microcontroller.
+In addition two probe inputs are provided that are connected to the FlexGPIO with a dedicated interrupt signal.  Polarity and enable masks are fully configurable.
 
-<img src="/readme_images/XOR_switches.gif" width="300">
+### HALT Input signal and Polarity Selection
 
-For the dual-input signals there is no need to terminate unused ports.
-
-The RJ45 pinout:
-
-<img src="/readme_images/limit_rj45_pinout.jpg" width="150">
-
-#### User Buttons
-
-Standard CNC functions are usually mapped to 4 inputs. They are also exposed via 3 wire connections on the main PCB.  These inputs have the same circuitry as the limit inputs and are NPN.  Connect SIG and GND to assert the signal.  When multiplexed these signals must be NO logic.
-
-The HALT signal is not a safety feature and should not be used in place of a true electrical emergerncy stop.  It is intended to notify the controller of urgent requests and should be NO as it is shared between the PCB terminal block, RJ45 output and motor alarm.
-
-### HALT Polarity Selection
+The HALT signal is not a safety feature and should not be used in place of a true electrical emergerncy stop.  It is intended to notify the controller of urgent requests.  The halt signal is shared between the PCB terminal and the RT control interface, but the polarity and operation is freely configurable between NPN, PNP, NO and NC.
 
 <img src="/readme_images/haltsel.png" width="400">
-
-Starting from A5 revision, the HALT signals from the Flexi-HAL board header and the RJ45 user button breakout are connected via an XOR gate. The polarity of the signal to the MCU can be inverted by moving the jumper P12 pictured above. The default state (as shown / rightmost two pins) is suitable for use with NO switches or if NC switches are connected to both the Flexi-HAL header and the RJ45 breakout. 
-
-Moving the jumper to the leftmost two pins allows you to use a single NC switch connected to the Flexi-HAL header or RJ45 breakout, with or without a NO switch connected to the other. The typical use case for this alternate configuration is with an NC overtravel sensor or NC e-stop circuit without the need for an external relay. 
 
 If you are in doubt of the correct header position for your case, you may simply try both positions and choose the one where the HALT signal is not asserted (red light is not on) when in the nominal operating condition.
 
 ### Real-Time Control Port
 <img src="/readme_images/Jog2k_Enclosure_2.png" width="500">
-This port is intended to allow for external pendant type devices to issue real-time jogging and override controls to the motion  controller.  It uses I2C signalling and adds additional signals for the keypad interrupt as well as the Halt signal.  We feel that a robust and wired control is the safest way to interact with a CNC machine in real time.  A simple reference controller implementation is under active development, but there are some code examples referenced in the GRBLHAL I2C keypad plugin repository:
+This port is intended to allow for external pendant type devices to issue real-time jogging and override controls to the motion  controller.  It uses I2C signalling and adds additional signals for the keypad interrupt as well as the Halt signal.  We feel that a robust and wired control is the safest way to interact with a CNC machine in real time.  A simple reference controller implementation is under active development, but there are some additional code examples referenced in the GRBLHAL I2C keypad plugin repository:
 
 https://github.com/grblHAL/Plugin_I2C_keypad/
 
 https://github.com/Expatria-Technologies/RT_Jog_Controller/
 
-### Spindle Sync Port
-This port allows a differential connection to an external module for a robust GRBLHAL lathe implementation or to support a high-speed encoder input for LinuxCNC.  An encoder such as E6B2-CWZ1X is suitable for most spindle applications.
+### Encoder Input Ports
+The two encoder ports are used in either of two ways.  First, these ports allow a differential connection to an external module for a robust GRBLHAL lathe implementation or to support a high-speed encoder input for LinuxCNC.  An encoder such as E6B2-CWZ1X is suitable for most spindle applications.  Additionally, an encoder based isolated ADC module can be used for Plasma THC applications.
 
 There is also a small breakout available that exposes these signals for 5V single-ended NPN input to interface with more basic sensors and other switched inputs.
 
-The RJ45 pinout:
-
+The RJ45 pinout:  
 <img src="/readme_images/encoder_rj45_pinout.jpg" width="150">
 
+Encoder Breakout Board:  
+<img src="/readme_images/encoder_render.jpg" width="150">
+
+### FlexiIO Port
+The FlexiHAL2350 introduces a new type of expansion port for Expatria.  The FlexIO port multiplexes the RS485 interface independently to a second connector that carries both power and RS485 signals.  This can be used as both a power source for external modules that are powered from the FlexiHAL's 24V input, or it can serve as a power supply for the board.  The RS485 signalling can be used with Modbus server devices such as the PicoHAL running the nanoModbus GRBLHAL plugin to provide independent control of toolchanges, LEDs, fans etc.
+
+The RJ45 pinout:  
+<img src="/readme_images/FlexIO_Pinout.jpg" width="150">
+
+Details on the PicoHAL are posted here:  
+[https://github.com/Expatria-Technologies/PicoHAL_HW](https://github.com/Expatria-Technologies/PicoHAL_HW)
+
+NanoModbus GRBLHAL Plugin is posted here:  
+[https://github.com/Expatria-Technologies/grblhal_nmbs_plugin](https://github.com/Expatria-Technologies/grblhal_nmbs_plugin)
+
+nanoModbus toolchanger in action (also showing Sienci's ATCI plugin):
+
+
+
+https://github.com/user-attachments/assets/d175002d-f440-4104-a30e-e2d423035390
+
+
+
 ### Raspberry PI expansion header
-<img src="/readme_images/Pi_Installed.png" width="500">
 The Rasberry Pi GPIO header allows the Flexi-HAL to host a full Raspberry Pi type SBC.  This allows the platform to support LinuxCNC via the Remora project.  Power should be connected to either the Pi or to the FlexiHAL, not both.
 
 <img src="/readme_images/Pi_Pinout.jpg" width="500">
@@ -177,16 +190,7 @@ The Rasberry Pi GPIO header allows the Flexi-HAL to host a full Raspberry Pi typ
 Some 3D printed accessories are avilable in [Mods & Accessories](https://github.com/Expatria-Technologies/Mods-Accessories/), including a DIN rail mount and enclosures/mounts for the limit and button breakouts.
 
 ### Default Jumper Locations
-![image](https://github.com/Expatria-Technologies/Flexi-HAL/assets/6061539/06c76aa8-7ccc-4621-a8f2-30bbd142a144)
-By default the following jumpers (shown in the graphic in RED) should be populated.
-This has the following effects:
-The RPI Header uart is connected to the internal MCU UART - this is necessary to flash Remora firmware from the RPI and also is used with the uFlexiNET module for the SD card chip select.
-The HALT polarity is set for use with an NO button like the button breakout.
-The analog spindle output is set for 0-10V.
-The analog spindle section is connected to the onboard 12V supply.
-The analog spindle section ground is connected to the PCB external ground.
-The aux outputs are powered via the main 24V input.
-
+There are no jumpers needed for the operation of this board.  The only jumpers are for the 5V power bypass.
 
 ### Example Wiring Diagram
 A comprehensive wiring diagram has been developed by the PrintNC community using the FlexiHAL.  While not specific to Flexi, this gives a great example of how to connect the board into the rest of a complete electronics box to drive a CNC machine. 
