@@ -40,15 +40,9 @@ The key features of the FlexiHAL 2350:
 14) All machine facing IO is galvanically isolated from the MCU and user interfaces.
 15) Easy reliable USB-C connection to a PC
 16) GRBLHAL Ethernet Websockets or Telnet communication through onboard Ethernet.
-17) GRBLHAL SD card G-Code streaming and macro/subroutine storage (including looping and conditional execution) with onboard storate and SD card.
+17) GRBLHAL SD card G-Code streaming and macro/subroutine storage (including looping and conditional execution) with onboard storage and SD card.
 
-Optimized GRBLHAL driver is located here:  
-https://github.com/Expatria-Technologies/STM32F4xx/releases
-
-Source code for the customized Remora component to run in LinuxCNC is located here:  
-https://github.com/Expatria-Technologies/remora-flexi-hal
-
-Prebuilt Raspberry Pi 4B image is located here:  
+Prebuilt Raspberry Pi LinuxCNC image is located here:  
 https://github.com/Expatria-Technologies/remora-flexi-hal/releases
 
 Accessory Encover Breakout PCB is located here:  
@@ -63,10 +57,6 @@ https://github.com/Dietz0r/grblHAL_Fusion360_Post_Processor
 ## Flexi-HAL Overview
 
 <img src="/readme_images/Board_Overview.png" width="700">
-
-Bottom side pin labels:
-
-<img src="/readme_images/backside.png" width="700">
 
 Pinout List:
 
@@ -107,16 +97,21 @@ Typical wiring for most open-loop stepper drivers:
 
 ![image](https://github.com/Expatria-Technologies/Flexi-HAL/assets/6061539/89e5df1e-06ef-4319-acb0-a30ee8e6447b)
 
+### Auxillary Outputs
+Two style of outputs are provided: high power and low power.  High power outputs are driven directly from the board input power.  Low power outputs are driven at 5V.
+
+### Spindle, Flood and Mist relay drivers
+The Spindle, Flood and Mist relay outputs are driven from the main board supply.  External relays should be selected to match the power supplied to the Flexi-HAL.  The absolute maximum coil current for each output should not exceed 250mA.  In general, the coil resistance should be 150 Ohm or greater.  The relay outputs are active-low, the high side is connected to the main power input.
+
+### Auxillary relay drivers
+<img src="/readme_images/AUX_POWER.jpg" width="200">
+Four axilliary relay outputs are exposed.  These have a maximum combined drive current of 1000 mA when operated via a dedicated power supply.  The relay voltage can be selected via a 3 pin jumper between the main board power supply, the onboard 12V supply and the onboard 5V supply.  If the jumper is left unpopulated power for the aux outputs is supplied via the dedicated (fused and polarity protected) input.  The 12V and 5V options cannot drive more than 20 mA per pin and are only used for TTL signalling applications - they should never be used to drive inductive loads.  Never populate P17 and the external supply at the same time.  When driving external relays, the coil resistance should be 150 Ohm or greater.  The relay outputs are active-low, the high side is connected via the power selection jumper.
 
 ### Analog Spindle Control
 
-Traditional GRBL spindle control interface for 0-10V or 0-5V spindle control.  Uses a dual-stage output driver for linear response.  Spindle power supply is selectable between 5V, 12V or external.  Note that when running the board with less than 14v input, it may not be possible to reach the full 10V output level - this is due to the dropout of the 12V LDO.  In this case, use the external spindle power input to connect your 12v and bypass the LDO for the spindle control voltage.
-
 <img src="/readme_images/Spindle_PWM_Config.jpg" width="500">
 
-Near the main power input of the Flexi-HAL there is a diagram showing how a set of jumpers may be configured to enable 0-10V analog or TTL PWM output.  This jumper allows you to have a 12V compliant TTL PWM signal to drive a device like a laser engraver or an ESC.
-
-Two headers - 3 pin P6 and 2 pin P16, connect the analog spindle section to the rest of the board.  P6 allows you to power the spindle section from either the onboard 5V or 12V rails.  If you remove P6 and P16 then the spindle section is completely isolated from the rest of the system and in this configuration can be used to drive motor controllers that require a floating control voltage.  Also, when driving the board with less than 14V input, it may not be possible to adjust the spindle output voltage to the full 10V.  In this case we recommend removing P6 (leave P16 in place) and applying 12V to the external spindle supply input directly.
+The spindle PWM pin is directly connected to the RP2350 main MCU.  This is normally used to drive a laser module with pulse modulation.  To use this output with a 0-10V analog spindle control, an external PWM converter must be used.
 
 
 ### RS485 Spindle Control
@@ -159,13 +154,6 @@ Starting from A5 revision, the HALT signals from the Flexi-HAL board header and 
 Moving the jumper to the leftmost two pins allows you to use a single NC switch connected to the Flexi-HAL header or RJ45 breakout, with or without a NO switch connected to the other. The typical use case for this alternate configuration is with an NC overtravel sensor or NC e-stop circuit without the need for an external relay. 
 
 If you are in doubt of the correct header position for your case, you may simply try both positions and choose the one where the HALT signal is not asserted (red light is not on) when in the nominal operating condition.
-
-### Spindle, Flood and Mist relay drivers
-The Spindle, Flood and Mist relay outputs are driven from the main board supply.  External relays should be selected to match the power supplied to the Flexi-HAL.  The absolute maximum coil current for each output should not exceed 250mA.  In general, the coil resistance should be 150 Ohm or greater.  The relay outputs are active-low, the high side is connected to the main power input.
-
-### Auxillary relay drivers
-<img src="/readme_images/AUX_POWER.jpg" width="200">
-Four axilliary relay outputs are exposed.  These have a maximum combined drive current of 1000 mA when operated via a dedicated power supply.  The relay voltage can be selected via a 3 pin jumper between the main board power supply, the onboard 12V supply and the onboard 5V supply.  If the jumper is left unpopulated power for the aux outputs is supplied via the dedicated (fused and polarity protected) input.  The 12V and 5V options cannot drive more than 20 mA per pin and are only used for TTL signalling applications - they should never be used to drive inductive loads.  Never populate P17 and the external supply at the same time.  When driving external relays, the coil resistance should be 150 Ohm or greater.  The relay outputs are active-low, the high side is connected via the power selection jumper.
 
 ### Real-Time Control Port
 <img src="/readme_images/Jog2k_Enclosure_2.png" width="500">
