@@ -153,13 +153,15 @@ https://github.com/Expatria-Technologies/RT_Jog_Controller/
 ### Encoder Input Ports
 The two encoder ports are used in either of two ways.  First, these ports allow a differential connection to an external module for a robust GRBLHAL lathe implementation or to support a high-speed encoder input for LinuxCNC.  An encoder such as E6B2-CWZ1X is suitable for most spindle applications.  Additionally, an encoder based isolated ADC module can be used for Plasma THC applications.
 
-There is also a small breakout available that exposes these signals for 5V single-ended NPN input to interface with more basic sensors and other switched inputs.
-
 The RJ45 pinout:  
 <img src="/readme_images/encoder_rj45_pinout.jpg" width="150">
 
+There is also a small breakout available that exposes these signals for use as discrete opto-coupled inputs.  This can be useful when you have a group of signals that are remotely co-located (such as the sensors in an ATC spindle) so that you only need to bring one cable back to the mainboard.
+
 Encoder Breakout Board:  
-<img src="/readme_images/encoder_render.jpg" width="400">
+[https://github.com/Expatria-Technologies/EST_Accessory_PCB/tree/main/ENCODER_BREAKOUT_MK2](https://github.com/Expatria-Technologies/EST_Accessory_PCB/tree/main/ENCODER_BREAKOUT_MK2)
+<img src="/readme_images/encoder_render.jpg" width="400">  
+
 
 ### FlexiIO Port
 The FlexiHAL2350 introduces a new type of expansion port for Expatria.  The FlexIO port multiplexes the RS485 interface independently to a second connector that carries both power and RS485 signals.  This can be used as both a power source for external modules that are powered from the FlexiHAL's 24V input, or it can serve as a power supply for the board.  The RS485 signalling can be used with Modbus server devices such as the PicoHAL running the nanoModbus GRBLHAL plugin to provide independent control of toolchanges, LEDs, fans etc.
