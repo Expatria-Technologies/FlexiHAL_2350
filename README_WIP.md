@@ -63,67 +63,66 @@ Pinout List:
 <img src="/readme_images/Pinout.png" width="900">
 
 ### RP2350 Microcontroller
+<img src="/readme_images/rp2350.webp" width="300">
 
-
-Primarily, the board supports both GRBLHAL and LinuxCNC.  Binary firmware builds for different axis configurations are published on the Expatria Github.  In addition, a customized port of the awesome Remora project has been developed alongside FlexiHAL so that you can easily switch to LinuxCNC.  With LinuxCNC, the Ethernet interface is used to connect with a host system.  Raspberry Pi 5 using the Expatria Flexi-Pi image is recommended.
+The FlexiHAL2350 is built around the RP2350 from Raspberry Pi, an MCU we're genuinely excited about, for its versatile PIO cores and the unique capabilities they unlock.
+The board is designed with flexibility at its core, supporting both GRBLHAL and LinuxCNC. In the future we would also like to add support for uCNC.  Pre-built binary firmware for a variety of axis configurations will be made available on the Expatria GitHub, so you can get up and running quickly without compiling from scratch.
+For LinuxCNC users, there is a customized port of the Remora project alongside FlexiHAL, making it straightforward to switch between motion control environments. In this mode a Raspberry Pi 5 is recommended when running the Expatria Flexi-Pi image.
 
 ### UF2 Bootloader
-The FlexiHAL 2350 uses the RP2350's built-in UF2 bootloader. This allows you to upgrade or change the firmware on the flexi as easily as copying a file to a USB drive.  Pre-built binary firmwares from Expatria are distributed as UF2 files.  To enter UF2 mode:
-1) Power up the MCU section (connect the USB cable) while holding the CYC/ST and FD/HLD buttons.
-2) Double-tap the reset (RST) button on the side of the board near the USBC port.
+The FlexiHAL 2350 uses the RP2350's built-in UF2 bootloader. This allows you to upgrade or change the firmware on the flexi as easily as copying a file to a USB drive.  Pre-built binary firmwares from Expatria are distributed as UF2 files.  To enter UF2 mode hold the BOOT button while powering up the board or while pulsing the RUN button.  Note that there are bootloader buttons for both the RP2040 based FlexGPIO expander as well as the main RP2350 processor.
 
-Once in bootloader mode, the Flexi will appear as a USB storage device called "FLEXI446" and the X limit light will flash briefly if there is no signal asserted on that pin (switch is open).  Simply copy the new firwmare to this USB drive and the board will automatically install it and reboot.  Some operating systems may give an error when flashing is complete because the 'disk' was removed without ejecting it.  This error can be ignored.
+Once in bootloader mode, the Flexi will appear as a USB storage device called "RPI-RP2."  Simply copy the new firwmare to this USB drive and the board will automatically install it and reboot.  Some operating systems may give an error when flashing is complete because the 'disk' was removed without ejecting it.  This error can be ignored.
 
 ### Power Input
 <img src="/readme_images/isolation_zones.png" width="500">
 
-The Flexi-HAL features the capability for full power and ground isolation between the sensitive microncontroller and host circuits, and the external IO that extends out to the rest of the machine.  There is a single input for 12-24VDC.  The board has its own onboard 5V regulator to power the stepper drivers and external RS485 interface.  There is also a small capacity 12V LDO that is specifically for driving the limit and user switches, as well as optionally providing the base voltage for the 10V spindle output.
+The Flexi-HAL features the capability for full power and ground isolation between the sensitive microncontroller and host circuits, and the external IO that extends out to the rest of the machine.  There is a single input for 12-24VDC.  The board has its own onboard 5V regulator to power the stepper drivers and external RS485 interface.  There is also a small capacity 12V LDO that is specifically for driving the limit and user switches.
 
-Flexi-HAL has reverse polarity as well as over-current protection beyond 1A.  This is important to consider when using external relays that draw a lot of current as this may overwhelm the capacity of the board.  If you need to drive more than 250 mA through the auxillary and mist/coolant relay outputs, external relays are likely required.
+Flexi-HAL has reverse polarity as well as over-current protection beyond 1.75A.  This is important to consider when using external relays that draw a lot of current as this may overwhelm the capacity of the board.  If you need to drive more than 250 mA through the auxillary and mist/coolant relay outputs, external relays are likely required.
 
 <img src="/readme_images/power_bypass.jpg" width="500">
-Normally the MCU and RPI header will be powered via the USBC connector.  The Jog2K is also powered from the isolated domain.  By installing two jumpers on the above offset pins, the 5V power and ground isolation can be bypassed and the Flexi-HAL will operate without an external 5V supply in a semi-isolated state.  This does reduce the EMI resistance of the board and is not recommended when sending Gcode via the USBC connector.
+Normally the MCU and RPI header will be powered via the USBC connector.  The RT control interface is also powered from the isolated domain.  By installing two jumpers on the above offset pins, the 5V power and ground isolation can be bypassed and the Flexi-HAL will operate without an external 5V supply in a semi-isolated state.  This does reduce the EMI resistance of the board and is not recommended when sending Gcode via the USBC connector.
 
-Note: With the isolation jumpers not-populatd, and the Flexi-HAL connected to 12-24v power, it may appear that the board is ready to run as some LEDs illuminate. You MUST provide 5v power to the isolated domain (MCU, Jogger) either through USB or the bypass jumpers in order for the MCU and Jogger to turn on!
+Note: With the isolation jumpers not-populatd, and the Flexi-HAL connected to 12-24v power, it may appear that the board is ready to run as some LEDs illuminate. You MUST provide 5v power to the isolated domain (MCU, Jogger) either through USB or the bypass jumpers in order for the MCU and Jogger to turn on.
 
 ### Stepper Drivers
 <img src="/readme_images/Stepper_Pins.jpg" width="300">
 
-The stepper drivers are designed to be used with IDC connectors that are quick to assemble.  Unfortunately you will need to ensure that at the external driver the high and low signal pairs are connected correctly as there is no standard pinout on these drivers.  The 8 pin connection allows you to run a high and low pair for every signal to ensure the best possible signal integrity.  The Flexi-HAL uses high speed digital isolators and differential RS-422 style signal drivers for the motion signals.
+The stepper drivers are designed to be used with standard or flex rated RJ45 cables.  Unfortunately you will need to ensure that at the external driver the high and low signal pairs are connected correctly as there is no standard pinout on these drivers.  The 8 pin connection allows you to run a high and low pair for every signal to ensure the best possible signal integrity.  The Flexi-HAL uses high speed digital isolators and differential RS-422 style signal drivers for the motion signals.
 
-When using the alarm input the external drivers need to be configured for open-drain, active-low output.  The alarm output must be high impedance during normal operation.  In normal operation the blue MOTOR LED will be lit indicating that there are no active alarms.
+The FlexiHAL 2350 has individual enable and alarm signals for every motor.  Alarm and enable polarity can therefore be set to whatever is required for operation.  The alarm output must be high impedance during normal operation.  There are LEDs provided on the board for every motor signal to help with debugging wiring issues.
 
 Typical wiring for most open-loop stepper drivers: 
 
 ![image](https://github.com/Expatria-Technologies/Flexi-HAL/assets/6061539/89e5df1e-06ef-4319-acb0-a30ee8e6447b)
 
 ### Auxillary Outputs
-Two style of outputs are provided: high power and low power.  High power outputs are driven directly from the board input power.  Low power outputs are driven at 5V.
+<img src="/readme_images/highpower-lowpower.jpg" width="200">
+Two style of outputs are provided: high power and low power.  High power outputs are driven directly from the board input power (12-24V).  Low power outputs are driven at 5V.  All outputs are PNP style high-side switching.
 
-### Spindle, Flood and Mist relay drivers
-The Spindle, Flood and Mist relay outputs are driven from the main board supply.  External relays should be selected to match the power supplied to the Flexi-HAL.  The absolute maximum coil current for each output should not exceed 250mA.  In general, the coil resistance should be 150 Ohm or greater.  The relay outputs are active-low, the high side is connected to the main power input.
+#### High Power Outputs
+Any single high-power output can drive up to 700 mA, though the total current supplied by the board is a maximum of 1.75A.  Each automotive grade output has short circuit, over-current and thermal shutdown protection.
 
-### Auxillary relay drivers
-<img src="/readme_images/AUX_POWER.jpg" width="200">
-Four axilliary relay outputs are exposed.  These have a maximum combined drive current of 1000 mA when operated via a dedicated power supply.  The relay voltage can be selected via a 3 pin jumper between the main board power supply, the onboard 12V supply and the onboard 5V supply.  If the jumper is left unpopulated power for the aux outputs is supplied via the dedicated (fused and polarity protected) input.  The 12V and 5V options cannot drive more than 20 mA per pin and are only used for TTL signalling applications - they should never be used to drive inductive loads.  Never populate P17 and the external supply at the same time.  When driving external relays, the coil resistance should be 150 Ohm or greater.  The relay outputs are active-low, the high side is connected via the power selection jumper.
+#### Low Power Outputs
+The low power outputs are designed for fast switching applications such as PWM output, neopixels or even additional stepgens.  They should not be configured to drive more than 10 mA.  They are provided with limited over-voltage and short-circuit protection.
 
-### Analog Spindle Control
+### PWM Spindle Control
 
 <img src="/readme_images/Spindle_PWM_Config.jpg" width="500">
 
 The spindle PWM pin is directly connected to the RP2350 main MCU.  This is normally used to drive a laser module with pulse modulation.  To use this output with a 0-10V analog spindle control, an external PWM converter must be used.
-
 
 ### RS485 Spindle Control
 This interface is primarily intended to be used with a Huanyang style VFD for spindle control.  The A, B and G (common) pins are marked on the top and bottoms sides of the PCB.  Simply connect the appropriate pins to the terminals on the VFD.  Note that the G pin should be used for signal common, it should not be connected to the shield of a shielded cable.
 
 https://github.com/grblHAL/Plugins_spindle/
 
-### 5 Axis limit inputs
+### 6 Axis limit and auxillary inputs
 
-By default both GRBL and the Flexi-HAL expect NPN NC limit switches.  PNP switches are not supported. NO switches can also be used on any switch input.
+Both PNP and NPN switches are supported.  A selector switch is provided on each input.
 
-The first four axes have single limit inputs that are also accessible via the RJ45 EST limit breakout connector.  GRBL always knows the direction of travel so individual min and max pins are not required.  Auto-squaring is supported by enabling ganged axes in GRBLHAL and setting the appropriate pins.
+Auto-squaring is supported by enabling ganged axes in GRBLHAL and setting the appropriate pins.
 
 In addition to the limit signals, there are two probe input pins on the limit RJ45 breakout connector and the main PCB that are multiplexed via XOR logic and share a single input pin on the microcontroller.
 
@@ -135,13 +134,9 @@ The RJ45 pinout:
 
 <img src="/readme_images/limit_rj45_pinout.jpg" width="150">
 
-### User Buttons
+#### User Buttons
 
-Standard CNC functions are mapped to 4 inputs.  These signals are primarily intended to be used via the user RJ45 connector.  They are also exposed via 3 wire connections on the main PCB.  These inputs have the same circuitry as the limit inputs and are NPN.  Connect SIG and GND to assert the signal.  When multiplexed these signals must be NO logic.
-
-The RJ45 pinout:
-
-<img src="/readme_images/user_rj45_pinout.jpg" width="150">
+Standard CNC functions are usually mapped to 4 inputs. They are also exposed via 3 wire connections on the main PCB.  These inputs have the same circuitry as the limit inputs and are NPN.  Connect SIG and GND to assert the signal.  When multiplexed these signals must be NO logic.
 
 The HALT signal is not a safety feature and should not be used in place of a true electrical emergerncy stop.  It is intended to notify the controller of urgent requests and should be NO as it is shared between the PCB terminal block, RJ45 output and motor alarm.
 
