@@ -45,7 +45,7 @@ The key features of the FlexiHAL 2350:
 Prebuilt Raspberry Pi LinuxCNC image is located here:  
 https://github.com/Expatria-Technologies/remora-flexi-hal/releases
 
-Accessory Encover Breakout PCB is located here:  
+Accessory Encoder Breakout PCB is located here:  
 [https://github.com/Expatria-Technologies/EST_Accessory_PCB/ENCODER_BREAKOUT_MK2](https://github.com/Expatria-Technologies/EST_Accessory_PCB/tree/main/ENCODER_BREAKOUT_MK2)
 
 Various community mods and accessories are located here:  
