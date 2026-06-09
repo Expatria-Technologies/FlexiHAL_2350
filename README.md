@@ -45,7 +45,7 @@ The key features of the FlexiHAL 2350:
 Prebuilt Raspberry Pi LinuxCNC image is located here:  
 https://github.com/Expatria-Technologies/remora-flexi-hal/releases
 
-Accessory Encover Breakout PCB is located here:  
+Accessory Encoder Breakout PCB is located here:  
 [https://github.com/Expatria-Technologies/EST_Accessory_PCB/ENCODER_BREAKOUT_MK2](https://github.com/Expatria-Technologies/EST_Accessory_PCB/tree/main/ENCODER_BREAKOUT_MK2)
 
 Various community mods and accessories are located here:  
@@ -151,10 +151,10 @@ https://github.com/grblHAL/Plugin_I2C_keypad/
 https://github.com/Expatria-Technologies/RT_Jog_Controller/
 
 ### Encoder Input Ports
-The two encoder ports are used in either of two ways.  First, these ports allow a differential connection to an external module for a robust GRBLHAL lathe implementation or to support a high-speed encoder input for LinuxCNC.  An encoder such as E6B2-CWZ1X is suitable for most spindle applications.  Additionally, an encoder based isolated ADC module can be used for Plasma THC applications.
+The two encoder ports are used in either of two ways.  First, these ports allow a differential connection to an external encoder for a robust GRBLHAL lathe implementation or to support a high-speed encoder input for LinuxCNC.  An encoder such as E6B2-CWZ1X is suitable for most spindle applications.  Additionally, an encoder based isolated ADC module can be used for Plasma THC applications.
 
 The RJ45 pinout:  
-<img src="/readme_images/encoder_rj45_pinout.jpg" width="150">
+<img src="/readme_images/encoder_rj45_pinout.jpg" width="250">
 
 There is also a small breakout available that exposes these signals for use as discrete opto-coupled inputs.  This can be useful when you have a group of signals that are remotely co-located (such as the sensors in an ATC spindle) so that you only need to bring one cable back to the mainboard.
 
@@ -175,7 +175,7 @@ Details on the PicoHAL are posted here:
 NanoModbus GRBLHAL Plugin is posted here:  
 [https://github.com/Expatria-Technologies/grblhal_nmbs_plugin](https://github.com/Expatria-Technologies/grblhal_nmbs_plugin)
 
-nanoModbus toolchanger in action (also showing Sienci's ATCI plugin):
+nanoModbus toolchanger in action; also showing Sienci's ATCI plugin.  In this video, the LEDs and all motions of the tool carousel are controlled via RS485 Modbus.
 
 
 
