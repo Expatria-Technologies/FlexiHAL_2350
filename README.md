@@ -43,7 +43,7 @@ The key features of the FlexiHAL 2350:
 17) GRBLHAL SD card G-Code streaming and macro/subroutine storage (including looping and conditional execution) with onboard storage and SD card.
 
 Prebuilt Raspberry Pi LinuxCNC image is located here:  
-https://github.com/Expatria-Technologies/remora-flexi-hal/releases
+https://github.com/Expatria-Technologies/Flexi-Pi/releases
 
 Accessory Encoder Breakout PCB is located here:  
 [https://github.com/Expatria-Technologies/EST_Accessory_PCB/ENCODER_BREAKOUT_MK2](https://github.com/Expatria-Technologies/EST_Accessory_PCB/tree/main/ENCODER_BREAKOUT_MK2)
