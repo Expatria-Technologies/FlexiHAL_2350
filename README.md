@@ -163,7 +163,7 @@ Encoder Breakout Board:
 <img src="/readme_images/encoder_render.jpg" width="400">  
 
 
-### FlexiIO Port
+### FlexIO Port
 The FlexiHAL2350 introduces a new type of expansion port for Expatria.  The FlexIO port multiplexes the RS485 interface independently to a second connector that carries both power and RS485 signals.  This can be used as both a power source for external modules that are powered from the FlexiHAL's 24V input, or it can serve as a power supply for the board.  The RS485 signalling can be used with Modbus server devices such as the PicoHAL running the nanoModbus GRBLHAL plugin to provide independent control of toolchanges, LEDs, fans etc.
 
 The RJ45 pinout:  
